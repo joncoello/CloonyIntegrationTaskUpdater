@@ -111,7 +111,7 @@ namespace CloonyIntegrationTaskUpdater {
             }
         }
 
-        public string GetClientList() {
+        public Models.ClientList GetClientList() {
 
             using (var client = new HttpClient()) {
 
@@ -152,7 +152,9 @@ namespace CloonyIntegrationTaskUpdater {
 
                 var result = response.Content.ReadAsStringAsync().Result;
 
-                return result;
+                var resource = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.ClientList>(result);
+
+                return resource;
 
             }
 
