@@ -1,7 +1,9 @@
 ﻿using MYOB.CSS;
 using MYOB.CSSInterface;
+using MYOB.DAL;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +26,31 @@ namespace Central.CloonyIntegration {
         }
 
         private void TaskStatusChanging(object sender, EventArgs e) {
-            MessageBox.Show("Task status changing");
+
+            var eArgs = e as FrameworkCancelEventArgs;
+
+            if (eArgs != null) {
+
+                int activityID = Convert.ToInt32(eArgs.PropertyBag["ActivityId"]);
+
+                var centralDal = CssContext.Instance.GetDAL(string.Empty) as DAL;
+
+                var data = centralDal.RunSpReturnDs("spGetTaskCloonyData",
+                    new DalParm("@activityid", SqlDbType.Int, 0, activityID));
+
+                if(data.Tables.Count==1 && data.Tables[0].Rows.Count == 1) {
+                    var row = data.Tables[0].Rows[0];
+
+                    string clientCode = Convert.ToString(row["ClientCode"]);
+                    string assignment = Convert.ToString(row["assignment"]);
+                    string taskName = Convert.ToString(row["taskName"]);
+
+                    MessageBox.Show(clientCode + assignment + taskName);
+
+                }
+
+            }
+
         }
 
     }
