@@ -62,19 +62,31 @@ namespace Central.CloonyIntegration {
 
                     var timeline = clientApi.GetTimeline(client.contactId);
 
-                    var step = timeline.timeline.FirstOrDefault(
-                        s => 
-                        s.processInstanceName == period 
-                        && s.taskName == task 
-                        && s.serviceAgreementName == assignment);
-
-                    if (step != null) {
-                        clientApi.UpdateStep(step);
+                    var stepsForService = timeline.timeline.Where(s=>s.serviceAgreementName == assignment);
+                    if (stepsForService.Count() == 0) {
+                        eArgs.Cancel = true;
+                        MessageBox.Show($"No service agreement called '{assignment}' found in the running tasks in Cloony", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
                     }
 
-                    MessageBox.Show("First open task complete");
+                    var stepsForPeriod = stepsForService.Where(s => s.processInstanceName == period);
+                    if (stepsForPeriod.Count() == 0) {
+                        eArgs.Cancel = true;
+                        MessageBox.Show($"No process period called '{period}' found in the running tasks in Cloony", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                    
+                    var step = stepsForPeriod.FirstOrDefault(s => s.taskName == task);
+                    if (step == null) {
+                        eArgs.Cancel = true;
+                        MessageBox.Show($"No task called '{task}' found in the running tasks in Cloony", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
 
-
+                    clientApi.UpdateStep(step);
+                    
+                    MessageBox.Show("Cloony task updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
                 }
 
             }
