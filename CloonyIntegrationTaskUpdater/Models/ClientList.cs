@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CloonyIntegrationTaskUpdater.Models {
-    class ClientList {
+    public class ClientList {
         public IEnumerable<Contact> Data { get; set; }
     }
 }

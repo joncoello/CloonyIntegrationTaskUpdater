@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CloonyIntegrationTaskUpdater {
-    class CloonyClient {
+    public class CloonyClient {
 
         private string _token;
         private Models.Session _session;

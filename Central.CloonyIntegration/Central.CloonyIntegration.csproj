@@ -57,6 +57,12 @@
   <ItemGroup>
     <Content Include="spGetTaskCloonyData.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CloonyIntegrationTaskUpdater\CloonyIntegrationTaskUpdater.csproj">
+      <Project>{5d8ba80c-ebc5-4459-8b79-8a0ea31bef9e}</Project>
+      <Name>CloonyIntegrationTaskUpdater</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

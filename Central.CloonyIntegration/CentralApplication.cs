@@ -1,4 +1,5 @@
-﻿using MYOB.CSS;
+﻿using CloonyIntegrationTaskUpdater;
+using MYOB.CSS;
 using MYOB.CSSInterface;
 using MYOB.DAL;
 using System;
@@ -45,7 +46,30 @@ namespace Central.CloonyIntegration {
                     string assignment = Convert.ToString(row["assignment"]);
                     string taskName = Convert.ToString(row["taskName"]);
 
-                    MessageBox.Show(clientCode + assignment + taskName);
+                    string period = taskName.Split('-')[0].Trim();
+                    string task = taskName.Split('-')[1].Trim();
+
+                    //MessageBox.Show(clientCode + assignment + taskName);
+
+                    var clientApi = new CloonyClient();
+                    clientApi.Login();
+                    clientApi.GetOrgSet();
+                    clientApi.GetOrgInfo();
+
+                    var clientList = clientApi.GetClientList();
+
+                    var client = clientList.Data.FirstOrDefault(c => c.contactCode == clientCode);
+
+                    var timeline = clientApi.GetTimeline(client.contactId);
+
+                    var step = timeline.timeline.FirstOrDefault(s => s.processInstanceName == period && s.taskName == task);
+
+                    if (step != null) {
+                        clientApi.UpdateStep(step);
+                    }
+
+                    MessageBox.Show("First open task complete");
+
 
                 }
 
