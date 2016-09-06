@@ -62,7 +62,11 @@ namespace Central.CloonyIntegration {
 
                     var timeline = clientApi.GetTimeline(client.contactId);
 
-                    var step = timeline.timeline.FirstOrDefault(s => s.processInstanceName == period && s.taskName == task);
+                    var step = timeline.timeline.FirstOrDefault(
+                        s => 
+                        s.processInstanceName == period 
+                        && s.taskName == task 
+                        && s.serviceAgreementName == assignment);
 
                     if (step != null) {
                         clientApi.UpdateStep(step);

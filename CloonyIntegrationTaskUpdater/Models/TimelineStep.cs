@@ -11,6 +11,7 @@
         public string taskId { get; set; }
         public string taskState { get; set; }
         public string serviceAgreementVersion { get; set; }
+        public string serviceAgreementName { get; set; }
 
     }
 }
