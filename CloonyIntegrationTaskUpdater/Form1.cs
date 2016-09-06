@@ -21,6 +21,10 @@ namespace CloonyIntegrationTaskUpdater {
             var client = new CloonyClient();
             client.Login();
 
+            //client.GetOrgInfo();
+
+            var clientList = client.GetClientList();
+
             var timeline = client.GetTimeline();
             
         }

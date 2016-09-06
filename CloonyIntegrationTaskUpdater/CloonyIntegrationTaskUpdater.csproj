@@ -57,6 +57,8 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Resource.cs" />
+    <Compile Include="Models\ResourceIdentifier.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Token.cs" />
     <Compile Include="Program.cs" />

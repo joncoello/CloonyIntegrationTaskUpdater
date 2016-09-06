@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CloonyIntegrationTaskUpdater.Models {
-    class Session {
-        public string id { get; set; }
-        public string organization { get; set; }
+    class Resource {
+        public ResourceIdentifier resourceIdentifier { get; set; }
     }
 }
