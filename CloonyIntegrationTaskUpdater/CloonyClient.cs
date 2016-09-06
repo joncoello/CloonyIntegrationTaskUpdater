@@ -203,14 +203,14 @@ namespace CloonyIntegrationTaskUpdater {
                 "/ServiceAgreementChangeStepStateCommand" +
                 "?domainid=" + _pmDomainGuid +
                 "&resid=" + step.serviceAgreementId +
-                "&revision=10" +
+                "&revision=" + step.serviceAgreementVersion +
                 "&orga=" + _orgSetID +
                 "&sid=" + _session.id;
                 
                 string json =
                     "{\"fields\":{\"processChainPosition\":\"" + step.processChainPosition + "\",\"processId\":\"" + step.processId + "\"," +
                     "\"processOriginId\":\"" + step.processOriginId + "\",\"id\":\"" + step.serviceAgreementId + "\"," +
-                    "\"state\":\"3\",\"isProposedState\":\"false\",\"version\":\"10\",\"taskId\":\"" + step.taskId + "\"}}";
+                    "\"state\":\"3\",\"isProposedState\":\"false\",\"version\":\"" + step.serviceAgreementVersion + "\",\"taskId\":\"" + step.taskId + "\"}}";
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
