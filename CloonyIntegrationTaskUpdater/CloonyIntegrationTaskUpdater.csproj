@@ -64,6 +64,8 @@
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Models\ResourceIdentifier.cs" />
     <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\TimelineDetails.cs" />
+    <Compile Include="Models\TimelineStep.cs" />
     <Compile Include="Models\Token.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

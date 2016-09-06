@@ -160,13 +160,61 @@ namespace CloonyIntegrationTaskUpdater {
 
         }
 
-        public string GetTimeline() {
+        public Models.TimelineDetails GetTimeline(string contactID) {
 
             using (var client = CreateHttpClient(true)) {
 
-                string getUrl = "/sdn/rest/domainsvc/get/sdn.intl.domain.cpm/PracticeManagementDomain/ContactList/f2270708-103d-46fc-b952-3557c1a2e912/81b18d66-bdf7-4351-ad78-f220426fa945?orga=6feb1454-71df-4c19-be9f-c6815c037c15&prj=f2270708-103d-46fc-b952-3557c1a2e912&contract=sdn.intl.domain.cpm.contact.query.contracts.ContactTimelineContract&sid=" + _session.id;
+                string getUrl = 
+                    "/sdn/rest/domainsvc/get/sdn.intl.domain.cpm/PracticeManagementDomain/" + 
+                    "ContactList/" + _pmDomainGuid + "/" + contactID  + 
+                    "?orga=" + _orgSetID + 
+                    "&prj=" + _pmDomainGuid + 
+                    "&contract=sdn.intl.domain.cpm.contact.query.contracts.ContactTimelineContract&sid=" + _session.id;
 
                 var response = client.GetAsync(getUrl).Result;
+
+                var result = response.Content.ReadAsStringAsync().Result;
+
+                var resource = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.TimelineDetails>(result);
+
+                return resource;
+
+            }
+
+        }
+
+        public string UpdateStep(Models.TimelineStep step) {
+
+            using (var client = new HttpClient()) {
+
+                client.DefaultRequestHeaders.Add("Host", "test.wk-cpm.de");
+                client.DefaultRequestHeaders.Add("Connection", "keep-alive");
+                //client.DefaultRequestHeaders.Add("Content-Length", "5236");
+                client.DefaultRequestHeaders.Add("Accept", "application/json, text/plain, */*");
+                client.DefaultRequestHeaders.Add("Origin", "https://test.wk-cpm.de");
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + _token);
+                //client.DefaultRequestHeaders.Add("Content-Type", "application/json;charset=UTF-8");
+                client.DefaultRequestHeaders.Add("Referer", "https://test.wk-cpm.de/");
+                client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
+                client.DefaultRequestHeaders.Add("Accept-Language", "en-GB,en-US;q=0.8,en;q=0.6");
+
+                string postUrl =
+                "https://test.wk-cpm.de/sdn/rest/businesscommand/command/sdn.intl.domain.cpm/PracticeManagementDomain/ClientList" +
+                "/ServiceAgreementChangeStepStateCommand" +
+                "?domainid=" + _pmDomainGuid +
+                "&resid=" + step.serviceAgreementId +
+                "&revision=10" +
+                "&orga=" + _orgSetID +
+                "&sid=" + _session.id;
+                
+                string json =
+                    "{\"fields\":{\"processChainPosition\":\"" + step.processChainPosition + "\",\"processId\":\"" + step.processId + "\"," +
+                    "\"processOriginId\":\"" + step.processOriginId + "\",\"id\":\"" + step.serviceAgreementId + "\"," +
+                    "\"state\":\"3\",\"isProposedState\":\"false\",\"version\":\"10\",\"taskId\":\"" + step.taskId + "\"}}";
+
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = client.PostAsync(postUrl, content).Result;
 
                 var result = response.Content.ReadAsStringAsync().Result;
 
