@@ -1,4 +1,5 @@
 ﻿using MYOB.CSS;
+using MYOB.CSSInterface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,17 @@ namespace Central.CloonyIntegration {
         }
 
         private void CentralApplication_ShutDown(object sender, EventArgs e) {
-            MessageBox.Show("Cloony shutdown");
+            CSSFormEventHandler.Instance.RemoveHandle("Central", "Task.StatusChanging", TaskStatusChanging);
         }
 
         private void CentralApplication_Startup(object sender, EventArgs e) {
-            MessageBox.Show("Cloony startup");
+            CSSFormEventHandler.Instance.AddHandle("Central", "Task.StatusChanging", TaskStatusChanging);
         }
+
+        private void TaskStatusChanging(object sender, EventArgs e) {
+            MessageBox.Show("Task status changing");
+        }
+
     }
+
 }
