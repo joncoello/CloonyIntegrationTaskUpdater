@@ -39,7 +39,7 @@
                 this.fields.processId = step.processId;
                 this.fields.processOriginId = step.processOriginId;
                 this.fields.id = step.serviceAgreementId;
-                this.fields.state = statusCode.ToString();
+                this.fields.state = System.Convert.ToInt32(statusCode).ToString();
                 this.fields.isProposedState = "false";
                 this.fields.version = step.serviceAgreementVersion;
                 this.fields.taskId = step.taskId;
