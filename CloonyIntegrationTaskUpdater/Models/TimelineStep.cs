@@ -34,6 +34,7 @@
 
             public UpdateTimeStep(TimelineStep step, TimelineStep.Status statusCode)
             {
+                this.fields = new Fields();
                 this.fields.processChainPosition = step.processChainPosition;
                 this.fields.processId = step.processId;
                 this.fields.processOriginId = step.processOriginId;

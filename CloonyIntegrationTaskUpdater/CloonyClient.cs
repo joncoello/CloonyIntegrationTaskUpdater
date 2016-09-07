@@ -10,7 +10,7 @@ using System.Configuration;
 
 namespace CloonyIntegrationTaskUpdater {
 
-    class CloonyClient {
+    public class CloonyClient {
 
         private string _token;
         private Models.Session _session;
