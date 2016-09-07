@@ -40,6 +40,10 @@
     <Reference Include="CSSInterface">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\CCH ProSystem\Deploy\CSSInterface.dll</HintPath>
     </Reference>
+    <Reference Include="CSSTaskManagement, Version=2016.200.0.0, Culture=neutral, PublicKeyToken=48a770bd06677a25, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\CCH ProSystem\Deploy\CSSTaskManagement.dll</HintPath>
+    </Reference>
     <Reference Include="DAL">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\CCH ProSystem\Deploy\DAL.dll</HintPath>
     </Reference>
