@@ -5,14 +5,28 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
+
 
 namespace CloonyIntegrationTaskUpdater {
+
     class CloonyClient {
 
         private string _token;
         private Models.Session _session;
         private string _pmDomainGuid;
         private string _orgSetID;
+
+
+        private const string _loginURL = "/sdn/oauth/token?response_type=code&grant_type=password";
+        private const string  _sessionURL = "/sdn/rest/directory/CreateSession?locale=en";
+        private const string _organisationURL = "/sdn/rest/domainsvc/get/sdn.core.directory/DirectoryDomain/OrganisationSet/{0}/{1}?orga={0}&prj={0}&sid={2}";
+        private const string _clientListURL = "/sdn/rest/domainsvc/query/sdn.intl.domain.cpm/PracticeManagementDomain/";
+        private const string _timeLineURL = "/sdn/rest/domainsvc/get/sdn.intl.domain.cpm/PracticeManagementDomain/ContactList/{0}/{1}"+
+            "?orga={2}&prj={3}&contract=sdn.intl.domain.cpm.contact.query.contracts.ContactTimelineContract&sid={4}";
+        private const string _StepStatusURL = "/sdn/rest/businesscommand/command/sdn.intl.domain.cpm/PracticeManagementDomain/ClientList";
+
+              
 
         public void Login() {
             _token = GetBearerToken();
@@ -42,13 +56,17 @@ namespace CloonyIntegrationTaskUpdater {
             using (var client = CreateHttpClient(false)) {
 
                 var keyValues = new List<KeyValuePair<string, string>>();
-                keyValues.Add(new KeyValuePair<string, string>("clientnumber", "25031"));
-                keyValues.Add(new KeyValuePair<string, string>("username", "anna.copeland"));
-                keyValues.Add(new KeyValuePair<string, string>("password", "anna"));
+
+              
+                   
+
+                keyValues.Add(new KeyValuePair<string, string>("clientnumber", ConfigurationManager.AppSettings["clientnumber"] ));
+                keyValues.Add(new KeyValuePair<string, string>("username", ConfigurationManager.AppSettings["username"]));
+                keyValues.Add(new KeyValuePair<string, string>("password", ConfigurationManager.AppSettings["password"]));
 
                 var content = new FormUrlEncodedContent(keyValues);
 
-                string postUrl = "/sdn/oauth/token?response_type=code&grant_type=password";
+                string postUrl = _loginURL;
 
                 var response = client.PostAsync(postUrl, content).Result;
 
@@ -66,12 +84,16 @@ namespace CloonyIntegrationTaskUpdater {
 
             using (var client = CreateHttpClient(true)) {
 
-                var getUrl = 
-                    "/sdn/rest/domainsvc/get/sdn.core.directory/DirectoryDomain/" + 
-                    "OrganisationSet/7401d334-2a41-4e65-8c05-8dfba9f773be/6feb1454-71df-4c19-be9f-c6815c037c15" + 
-                    "?orga=7401d334-2a41-4e65-8c05-8dfba9f773be" + 
-                    "&prj=7401d334-2a41-4e65-8c05-8dfba9f773be" + 
-                    "&sid=" + _session.id;
+                //var getUrl = 
+                //    "/sdn/rest/domainsvc/get/sdn.core.directory/DirectoryDomain/" + 
+                //    "OrganisationSet/7401d334-2a41-4e65-8c05-8dfba9f773be/6feb1454-71df-4c19-be9f-c6815c037c15" + 
+                //    "?orga=7401d334-2a41-4e65-8c05-8dfba9f773be" + 
+                //    "&prj=7401d334-2a41-4e65-8c05-8dfba9f773be" + 
+                //    "&sid=" + _session.id;
+                var getUrl = string.Format(_organisationURL,
+                    "7401d334-2a41-4e65-8c05-8dfba9f773be",
+                    "6feb1454-71df-4c19-be9f-c6815c037c15",
+                    _session.id);
 
                 var response = client.GetAsync(getUrl).Result;
 
@@ -164,12 +186,7 @@ namespace CloonyIntegrationTaskUpdater {
 
             using (var client = CreateHttpClient(true)) {
 
-                string getUrl = 
-                    "/sdn/rest/domainsvc/get/sdn.intl.domain.cpm/PracticeManagementDomain/" + 
-                    "ContactList/" + _pmDomainGuid + "/" + contactID  + 
-                    "?orga=" + _orgSetID + 
-                    "&prj=" + _pmDomainGuid + 
-                    "&contract=sdn.intl.domain.cpm.contact.query.contracts.ContactTimelineContract&sid=" + _session.id;
+                string getUrl = string.Format(_timeLineURL, _pmDomainGuid, contactID, _orgSetID, _pmDomainGuid, _session.id);
 
                 var response = client.GetAsync(getUrl).Result;
 
@@ -206,13 +223,10 @@ namespace CloonyIntegrationTaskUpdater {
                 "&revision=" + step.serviceAgreementVersion +
                 "&orga=" + _orgSetID +
                 "&sid=" + _session.id;
-                
-                string json =
-                    "{\"fields\":{\"processChainPosition\":\"" + step.processChainPosition + "\",\"processId\":\"" + step.processId + "\"," +
-                    "\"processOriginId\":\"" + step.processOriginId + "\",\"id\":\"" + step.serviceAgreementId + "\"," +
-                    "\"state\":\"3\",\"isProposedState\":\"false\",\"version\":\"" + step.serviceAgreementVersion + "\",\"taskId\":\"" + step.taskId + "\"}}";
 
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var s = step.TimeStepUpdate(Models.TimelineStep.Status.ticked);
+                
+                var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(s), Encoding.UTF8, "application/json");
 
                 var response = client.PostAsync(postUrl, content).Result;
 
