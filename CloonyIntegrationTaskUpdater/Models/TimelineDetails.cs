@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CloonyIntegrationTaskUpdater.Models {
-    class TimelineDetails {
+    public class TimelineDetails {
         public IEnumerable<TimelineStep> timeline { get; set; }
     }
 }
