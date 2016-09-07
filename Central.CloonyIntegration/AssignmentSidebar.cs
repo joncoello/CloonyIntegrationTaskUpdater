@@ -48,7 +48,7 @@ namespace Central.CloonyIntegration {
             clientApi.GetOrgSet();
             clientApi.GetOrgInfo();
 
-            var clientList = clientApi.GetClientList();
+            var clientList = clientApi.GetClientList(assignment.Client.ClientCode);
 
             var client = clientList.Data.FirstOrDefault(c => c.contactCode == assignment.Client.ClientCode);
 
