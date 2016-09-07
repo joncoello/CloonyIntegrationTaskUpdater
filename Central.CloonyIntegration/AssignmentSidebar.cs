@@ -1,12 +1,16 @@
-﻿using MYOB.CSSInterface;
+﻿using Central.CSSContactAPI;
+using MYOB.CSS;
+using MYOB.CSSInterface;
+using MYOB.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Central.CloonyIntegration {
-    public class AssignmentSidebar : CSSTabSideBarItems, ICSSPropertyBag {
+    public class AssignmentSidebar : CSSTabSideBarItems {
 
         private PropertyBag _pb;
 
@@ -30,13 +34,15 @@ namespace Central.CloonyIntegration {
         }
 
         private void CreateTasks(object Sender, SideBarEventArgs e) {
-            System.Windows.Forms.MessageBox.Show("Test");
-        }
 
-        void ICSSPropertyBag.PropertyBag(PropertyBag PropertyBag) {
-            _pb = PropertyBag;
-        }
+            var centralDal = CssContext.Instance.GetDAL(string.Empty) as DAL;
+            var gateway = new CentralGateway(centralDal);
+            var assignment = gateway.FindAssignment(this.PropertyBag.AssignmentId, CssContext.Instance.Host.EmployeeId);
 
+            MessageBox.Show("Open assignment is " + assignment.Name);
+
+        }
+        
     }
 
 }
