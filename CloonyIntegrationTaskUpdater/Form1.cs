@@ -36,9 +36,18 @@ namespace CloonyIntegrationTaskUpdater {
             if (step != null) {
                 clientApi.UpdateStep(step);
             }
-            
+
         }
 
+        private void cmdCreateTemplate_Click(object sender, EventArgs e) {
 
+            var clientApi = new CloonyClient();
+            clientApi.Login();
+            clientApi.GetOrgSet();
+            clientApi.GetOrgInfo();
+
+            //clientApi.CreateAssignmentTemplate();
+
+        }
     }
 }

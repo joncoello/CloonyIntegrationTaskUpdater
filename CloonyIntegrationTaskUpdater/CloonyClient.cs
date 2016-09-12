@@ -26,7 +26,7 @@ namespace CloonyIntegrationTaskUpdater {
             "?orga={2}&prj={3}&contract=sdn.intl.domain.cpm.contact.query.contracts.ContactTimelineContract&sid={4}";
         private const string _StepStatusURL = "/sdn/rest/businesscommand/command/sdn.intl.domain.cpm/PracticeManagementDomain/ClientList";
 
-              
+
 
         public void Login() {
             _token = GetBearerToken();
@@ -212,7 +212,7 @@ namespace CloonyIntegrationTaskUpdater {
             }
 
         }
-
+        
         public string UpdateStep(Models.TimelineStep step) {
 
             using (var client = new HttpClient()) {
@@ -251,8 +251,40 @@ namespace CloonyIntegrationTaskUpdater {
 
         }
 
-        private HttpClient CreateHttpClient(bool includeToken) {
+        public string CreateAssignmentTemplate(string name, string description) {
 
+            using (var client = CreateHttpClient(true)) {
+
+                var url = 
+                    "/sdn/rest/businesscommand/command/sdn.intl.domain.cpm/PracticeManagementDomain/ServiceAgreementTemplates" + 
+                    "/ServiceAgreementTemplateCreateCommand" + 
+                    "?domainid=f2270708-103d-46fc-b952-3557c1a2e912" + 
+                    "&resid=00000000-0000-0000-0000-000000000000" + 
+                    "&revision=0" + 
+                    "&orga=6feb1454-71df-4c19-be9f-c6815c037c15" + 
+                    "&sid=" + _session.id;
+
+                var json = 
+                    "{\"fields\":{\"id\":\"00000000-0000-0000-0000-000000000000\",\"rowStyle\":\"Standard\",\"version\":\"0\"," + 
+                    "\"wrappedClassName\":\"ServiceAgreementTemplateContract\",\"name\":\"" + name + "\",\"templateDescription\":\"" + description + "\"," + 
+                    "\"icon\":\"0\"},\"collections\":{\"conditionInfoList\":[],\"servicetypeList\":[],\"processList\":[]," + 
+                    "\"billLineTemplateGroupInfoList\":[]},\"subobjects\":{\"portfolio\":{\"fields\":{\"state\":\"0\"}," + 
+                    "\"subobjects\":{\"serviceTypes\":{\"fields\":{\"PR\":\"false\",\"BK\":\"false\"}}}}}}";
+
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = client.PostAsync(url, content).Result;
+
+                var result = response.Content.ReadAsStringAsync().Result;
+
+                return result;
+
+            }
+            
+        }
+
+        private HttpClient CreateHttpClient(bool includeToken) {
+            
             var client = new HttpClient();
 
             client.BaseAddress = new Uri("https://test.wk-cpm.de");
